@@ -1,0 +1,99 @@
+{
+  "name": "cz-adapter-eslint",
+  "version": "0.0.0",
+  "description": "My smashing project.",
+  "homepage": "https://github.com/stormwarning/cz-adapter-eslint",
+  "author": "Jeff <rustyangel@gmail.com> ()",
+  "config": {
+    "commitizen": {
+      "path": "emoji-cz",
+      "emoji-cz": {
+        "types": {
+          "Style": {
+            "emoji": "👕",
+            "name": "Code style",
+            "description": "Improving structure/format of the code."
+          },
+          "Perf": {
+            "emoji": "⚡️",
+            "name": "Perf",
+            "description": "A code change that improves performance."
+          },
+          "Config": {
+            "emoji": "⚙️",
+            "name": "Config",
+            "description": "Adjusting project configuration settings."
+          },
+          "Content": {
+            "emoji": "✏️",
+            "name": "Content",
+            "description": "Content edits or additions."
+          },
+          "Dependency": {
+            "emoji": "📦",
+            "name": "Dependency",
+            "description": "Adding or up/downgrading project dependencies."
+          },
+          "First": {
+            "emoji": "🎉",
+            "name": "Init",
+            "description": "Initial commit."
+          },
+          "UI": {
+            "emoji": "🎨",
+            "name": "UI",
+            "description": "Visual or interaction changes."
+          }
+        },
+        "format": "[emoji] [subject]"
+      }
+    }
+  },
+  "devDependencies": {
+    "babel-eslint": "~7.2.3",
+    "commitizen": "~2.9.6",
+    "emoji-cz": "^0.3.0",
+    "eslint": "~4.6.1",
+    "eslint-config-standard": "~10.2.1",
+    "eslint-plugin-import": "~2.7.0",
+    "eslint-plugin-node": "~5.1.1",
+    "eslint-plugin-promise": "~3.5.0",
+    "eslint-plugin-standard": "~3.0.1",
+    "husky": "^0.14.3",
+    "lint-staged": "~4.3.0",
+    "npm-run-all": "~4.1.2",
+    "prettier-eslint": "~7.1.0",
+    "remark-cli": "~4.0.0",
+    "remark-preset-github": "0.0.7"
+  },
+  "keywords": [
+    "commitizen",
+    "commitizen-adapter",
+    "conventional-changelog",
+    "eslint",
+    "changelog"
+  ],
+  "license": "MIT",
+  "lint-staged": {
+    "*.md": [
+      "remark . -qfo",
+      "git add"
+    ]
+  },
+  "publishConfig": {
+    "message": "🔖 %s"
+  },
+  "remarkConfig": {
+    "settings": {
+      "listItemIndent": "mixed"
+    }
+  },
+  "repository": "https://github.com/stormwarning/cz-adapter-eslint",
+  "scripts": {
+    "cz": "git-cz",
+    "lint": "npm-run-all lint:*",
+    "lint:markdown": "remark . -qfo",
+    "precommit": "lint-staged && npm test",
+    "test": "npm run lint"
+  }
+}
