@@ -1,9 +1,9 @@
 {
   "name": "cz-adapter-eslint",
   "version": "0.0.0",
-  "description": "My smashing project.",
+  "description": "A commitizen adapter for the conventional-changelog eslint preset.",
   "homepage": "https://github.com/stormwarning/cz-adapter-eslint",
-  "author": "Jeff <rustyangel@gmail.com> ()",
+  "author": "Jeff Nelson (http://tidaltheory.co/)",
   "config": {
     "commitizen": {
       "path": "emoji-cz",
