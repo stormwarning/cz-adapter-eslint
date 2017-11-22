@@ -2,53 +2,33 @@ import engine from './engine'
 
 export default engine({
     types: {
-        feat: {
-            description: 'A new feature',
-            title: 'Features',
-        },
-        fix: {
+        'Fix': {
             description: 'A bug fix',
-            title: 'Bug Fixes',
+            title: 'Bug fixes',
         },
-        docs: {
-            description: 'Documentation-only changes',
-            title: 'Documentation',
+        'Update': {
+            description: 'A backwards-compatible enhancement',
+            title: 'Updates',
         },
-        style: {
-            description:
-                'Changes that do not affect the meaning of the code (white-space, formatting, missing semi-colons, etc)',
-            title: 'Styles',
+        'Breaking': {
+            description: 'A backwards-incompatible enhancement',
+            title: 'Breaking changes',
         },
-        refactor: {
-            description:
-                'A code change that neither fixes a bug nor adds a feature',
-            title: 'Code Refactoring',
+        'Docs': {
+            description: 'Documentation change',
+            title: 'Docs',
         },
-        perf: {
-            description: 'A code change that improves performance',
-            title: 'Performance Improvements',
+        'Build': {
+            description: 'Build process update',
+            title: 'Build changes',
         },
-        test: {
-            description: 'Adding missing tests or correcting existing tests',
-            title: 'Tests',
+        'New': {
+            description: 'A new feature implementation',
+            title: 'New features',
         },
-        build: {
-            description:
-                'Changes that affect the build system or external dependencies (example scopes: gulp, broccoli, npm)',
-            title: 'Builds',
-        },
-        ci: {
-            description:
-                'Changes to our CI configuration files and scripts (example scopes: Travis, Circle, BrowserStack, SauceLabs)',
-            title: 'Continuous Integrations',
-        },
-        chore: {
-            description: "Other changes that don't modify src or test files",
-            title: 'Chores',
-        },
-        revert: {
-            description: 'Reverts a previous commit',
-            title: 'Reverts',
+        'Upgrade': {
+            description: 'Dependency upgrade',
+            title: 'Upgrades',
         },
     },
 })
