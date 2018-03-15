@@ -5,7 +5,7 @@
   "author": "Jeff Nelson (http://tidaltheory.co/)",
   "homepage": "https://github.com/stormwarning/cz-adapter-eslint",
   "repository": "stormwarning/cz-adapter-eslint",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "files": [
     "dist/cz-adapter-eslint.js",
     "dist/cz-adapter-eslint.m.js",
