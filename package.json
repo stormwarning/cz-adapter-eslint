@@ -16,14 +16,14 @@
     "build": "microbundle -i src/index.js -o dist",
     "cm": "git-cz",
     "lint": "npm-run-all lint:*",
-    "lint:js": "prettier-eslint '**/*.js'",
+    "lint:js": "prettier-eslint 'src/*.js' --write",
     "lint:markdown": "remark . -qo",
     "prepublish": "npm run build",
     "test": "npm run lint"
   },
   "config": {
     "commitizen": {
-      "path": "./index.js"
+      "path": "./dist/cz-adapter-eslint.js"
     }
   },
   "dependencies": {
