@@ -2,31 +2,31 @@ import engine from './engine'
 
 export default engine({
     types: {
-        'Fix': {
+        Fix: {
             description: 'A bug fix',
             title: 'Bug fixes',
         },
-        'Update': {
+        Update: {
             description: 'A backwards-compatible enhancement',
             title: 'Updates',
         },
-        'Breaking': {
+        Breaking: {
             description: 'A backwards-incompatible enhancement',
             title: 'Breaking changes',
         },
-        'Docs': {
+        Docs: {
             description: 'Documentation change',
             title: 'Docs',
         },
-        'Build': {
+        Build: {
             description: 'Build process update',
             title: 'Build changes',
         },
-        'New': {
+        New: {
             description: 'A new feature implementation',
             title: 'New features',
         },
-        'Upgrade': {
+        Upgrade: {
             description: 'Dependency upgrade',
             title: 'Upgrades',
         },
