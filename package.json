@@ -6,12 +6,19 @@
   "homepage": "https://github.com/stormwarning/cz-adapter-eslint",
   "repository": "stormwarning/cz-adapter-eslint",
   "version": "0.1.0",
+  "files": [
+    "dist/cz-adapter-eslint.js",
+    "dist/cz-adapter-eslint.m.js",
+    "dist/cz-adapter-eslint.umd.js"
+  ],
   "scripts": {
     "_precommit": "lint-staged && npm test",
+    "build": "microbundle -i src/index.js -o dist",
     "cm": "git-cz",
     "lint": "npm-run-all lint:*",
     "lint:js": "prettier-eslint '**/*.js'",
     "lint:markdown": "remark . -qo",
+    "prepublish": "npm run build",
     "test": "npm run lint"
   },
   "config": {
@@ -30,6 +37,7 @@
     "commitizen": "~2.9.6",
     "husky": "^0.14.3",
     "lint-staged": "~4.3.0",
+    "microbundle": "^0.4.4",
     "npm-run-all": "~4.1.2",
     "remark-cli": "~4.0.0",
     "remark-contributors": "~3.1.0",
