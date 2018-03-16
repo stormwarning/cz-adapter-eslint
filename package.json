@@ -6,14 +6,13 @@
   "homepage": "https://github.com/stormwarning/cz-adapter-eslint",
   "repository": "stormwarning/cz-adapter-eslint",
   "version": "0.1.1",
+  "main": "dist/cz-adapter-eslint.js",
   "files": [
-    "dist/cz-adapter-eslint.js",
-    "dist/cz-adapter-eslint.m.js",
-    "dist/cz-adapter-eslint.umd.js"
+    "dist/cz-adapter-eslint.js"
   ],
   "scripts": {
     "_precommit": "lint-staged && npm test",
-    "build": "microbundle -i src/index.js -o dist",
+    "build": "microbundle --target node --external all --compress false --sourcemap false -i src/index.js -o dist -f cjs",
     "cm": "git-cz",
     "lint": "npm-run-all lint:*",
     "lint:js": "prettier-eslint 'src/*.js' --write",
