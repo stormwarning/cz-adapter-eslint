@@ -8,9 +8,7 @@
   "version": "0.1.1",
   "main": "dist/cz-adapter-eslint.js",
   "files": [
-    "dist/cz-adapter-eslint.js",
-    "dist/cz-adapter-eslint.m.js",
-    "dist/cz-adapter-eslint.umd.js"
+    "dist/cz-adapter-eslint.js"
   ],
   "scripts": {
     "_precommit": "lint-staged && npm test",
