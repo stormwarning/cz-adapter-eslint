@@ -30,5 +30,9 @@ export default engine({
             description: 'Dependency upgrade',
             title: 'Upgrades',
         },
+        Chore: {
+            description: 'Other changes (e.g.: refactoring)',
+            title: 'Chores',
+        },
     },
 })
