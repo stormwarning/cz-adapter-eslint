@@ -41,7 +41,7 @@
     "npm-run-all": "~4.1.2",
     "remark-cli": "~4.0.0",
     "remark-contributors": "~4.0.0",
-    "remark-github": "~7.0.2",
+    "remark-github": "~7.0.6",
     "remark-preset-lint-markdown-style-guide": "~2.1.1",
     "remark-toc": "~4.0.1"
   },
