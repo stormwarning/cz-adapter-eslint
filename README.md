@@ -10,7 +10,7 @@ A [commitizen][] adapter for the conventional-changelog [eslint preset][].
 ### Global
 
 ```sh
-npm install --global cz-adapter-elint
+npm install --global cz-adapter-eslint
 
 # Set as the default adapater.
 echo '{ "path": "cz-adapter-eslint" }' > ~/.czrc
