@@ -7,17 +7,11 @@
   "repository": "stormwarning/cz-adapter-eslint",
   "version": "0.2.0",
   "main": "dist/cz-adapter-eslint.js",
-  "files": [
-    "dist/cz-adapter-eslint.js"
-  ],
   "scripts": {
-    "_precommit": "lint-staged && npm test",
     "build": "microbundle --target node --external all --compress false --sourcemap false -i src/index.js -o dist -f cjs",
     "cm": "git-cz",
-    "lint": "npm-run-all lint:*",
-    "lint:js": "prettier-eslint 'src/*.js' --write",
-    "lint:markdown": "remark . -qo",
-    "prepublish": "npm run build",
+    "lint": "prettier-eslint 'src/*.js' --list-different",
+    "prepublishOnly": "npm run build",
     "test": "npm run lint"
   },
   "config": {
@@ -36,14 +30,8 @@
     "commitizen": "~2.9.6",
     "eslint": "^5.16.0",
     "husky": "^1.3.1",
-    "lint-staged": "~4.3.0",
-    "microbundle": "^0.11.0",
-    "npm-run-all": "~4.1.5",
-    "remark-cli": "~6.0.1",
-    "remark-contributors": "~4.0.0",
-    "remark-github": "~7.0.6",
-    "remark-preset-lint-markdown-style-guide": "~2.1.2",
-    "remark-toc": "~4.0.1"
+    "lint-staged": "^4.3.0",
+    "microbundle": "^0.11.0"
   },
   "keywords": [
     "changelog",
@@ -52,13 +40,14 @@
     "conventional-changelog",
     "eslint"
   ],
+  "husky": {
+    "hooks": {
+      "pre-commit": "lint-staged"
+    }
+  },
   "lint-staged": {
-    "*.+{js|json}": [
-      "prettier-eslint --list-different",
-      "git add"
-    ],
-    "*.md": [
-      "remark . -qo",
+    "*.js": [
+      "prettier-eslint --write",
       "git add"
     ]
   },
@@ -68,30 +57,5 @@
     "singleQuote": true,
     "tabWidth": 4,
     "trailingComma": "all"
-  },
-  "remarkConfig": {
-    "plugins": [
-      "preset-lint-markdown-style-guide",
-      [
-        "lint-maximum-line-length",
-        false
-      ],
-      [
-        "lint-list-item-spacing",
-        false
-      ],
-      "contributors",
-      "github",
-      "toc"
-    ],
-    "settings": {
-      "commonmark": true,
-      "bullet": "-",
-      "listItemIndent": 1,
-      "rule": "-",
-      "ruleSpaces": false,
-      "strong": "*",
-      "emphasis": "*"
-    }
   }
 }
