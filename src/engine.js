@@ -1,6 +1,6 @@
+import * as chalk from 'chalk'
 import longest from 'longest'
 import map from 'lodash.map'
-import rightPad from 'right-pad'
 import wrap from 'word-wrap'
 
 function filter(array) {
@@ -9,13 +9,35 @@ function filter(array) {
     })
 }
 
-export default function(options) {
-    var types = options.types
+function headerLength(answers) {
+    return (
+        answers.type.length + 2 + (answers.scope ? answers.scope.length + 2 : 0)
+    )
+}
 
-    var length = longest(Object.keys(types)).length + 1
-    var choices = map(types, function(type, key) {
+function maxSummaryLength(answers) {
+    return 72 - headerLength(answers)
+}
+
+function filterSubject(subject) {
+    subject = subject.trim()
+    if (subject.charAt(0).toLowerCase() !== subject.charAt(0)) {
+        subject =
+            subject.charAt(0).toLowerCase() + subject.slice(1, subject.length)
+    }
+    while (subject.endsWith('.')) {
+        subject = subject.slice(0, subject.length - 1)
+    }
+    return subject
+}
+
+export default function(options) {
+    let types = options.types
+
+    let length = longest(Object.keys(types)).length + 1
+    let choices = map(types, function(type, key) {
         return {
-            name: rightPad(key + ':', length) + ' ' + type.description,
+            name: (key + ':').padEnd(length) + ' ' + type.description,
             value: key,
         }
     })
@@ -33,10 +55,6 @@ export default function(options) {
         // By default, we'll de-indent your commit
         // template and will keep empty lines.
         prompter: function(cz, commit) {
-            console.log(
-                '\nLine 1 will be cropped at 100 characters. All other lines will be wrapped after 100 characters.\n',
-            )
-
             // Let's ask some questions of the user
             // so that we can populate our commit
             // template.
@@ -51,18 +69,52 @@ export default function(options) {
                     message:
                         "Select the type of change that you're committing:",
                     choices: choices,
+                    default: options.defaultType,
                 },
                 {
                     type: 'input',
                     name: 'subject',
-                    message:
-                        'Write a short, imperative tense description of the change:\n',
+                    message: function(answers) {
+                        return (
+                            'Write a short, imperative tense description of the change, (max ' +
+                            maxSummaryLength(answers) +
+                            ' chars):\n'
+                        )
+                    },
+                    default: options.defaultSubject,
+                    validate: function(subject, answers) {
+                        let filteredSubject = filterSubject(subject)
+                        return filteredSubject.length === 0
+                            ? 'subject is required'
+                            : filteredSubject.length <=
+                              maxSummaryLength(answers)
+                            ? true
+                            : 'Subject length must be less than or equal to ' +
+                              maxSummaryLength(answers) +
+                              ' characters. Current length is ' +
+                              filteredSubject.length +
+                              ' characters.'
+                    },
+                    transformer: function(subject, answers) {
+                        let filteredSubject = filterSubject(subject)
+                        let color =
+                            filteredSubject.length <= maxSummaryLength(answers)
+                                ? chalk.green
+                                : chalk.red
+                        return color(
+                            '(' + filteredSubject.length + ') ' + subject,
+                        )
+                    },
+                    filter: function(subject) {
+                        return filterSubject(subject)
+                    },
                 },
                 {
                     type: 'input',
                     name: 'body',
                     message:
                         'Provide a longer description of the change: (press enter to skip)\n',
+                    default: options.defaultBody,
                 },
                 {
                     type: 'confirm',
@@ -82,51 +134,60 @@ export default function(options) {
                     type: 'confirm',
                     name: 'isIssueAffected',
                     message: 'Does this change affect any open issues?',
-                    default: false,
+                    default: options.defaultIssues,
                 },
                 {
                     type: 'input',
                     name: 'issues',
                     message:
-                        'Add issue references (e.g. "fix #123", "re #123".):\n',
+                        'Add issue references (e.g. "fixes #123", "refs #123".):\n',
                     when: function(answers) {
                         return answers.isIssueAffected
                     },
+                    default: options.defaultIssues
+                        ? options.defaultIssues
+                        : undefined,
                 },
             ]).then(function(answers) {
-                var maxLineWidth = 100
+                let maxLineWidth = 100
 
-                var wrapOptions = {
+                let wrapOptions = {
                     trim: true,
+                    cut: false,
                     newline: '\n',
                     indent: '',
                     width: maxLineWidth,
                 }
 
-                // Hard limit this line
-                var head = (answers.type + ': ' + answers.subject.trim()).slice(
-                    0,
-                    maxLineWidth,
-                )
+                // Hard limit this line in the validate
+                let head = answers.type + ': ' + answers.subject
 
                 // Wrap these lines at 100 characters
-                var body = wrap(answers.body, wrapOptions)
+                let body = wrap(answers.body, wrapOptions)
 
                 // Apply breaking change prefix, removing it if already present
-                var breaking = answers.breaking ? answers.breaking.trim() : ''
+                let breaking = answers.breaking ? answers.breaking.trim() : ''
                 breaking = breaking
                     ? 'BREAKING CHANGE: ' +
                       breaking.replace(/^BREAKING CHANGE: /, '')
                     : ''
-                breaking = wrap(breaking, wrapOptions)
 
-                var issues = answers.issues
+                let footer = breaking ? wrap(breaking, wrapOptions) : ''
+
+                let issues = answers.issues
                     ? wrap(answers.issues, wrapOptions)
-                    : ''
+                    : false
 
-                var footer = filter([breaking, issues]).join('\n\n')
+                if (issues) {
+                    // Append the issues to the head if there is room, otherwise to the footer.
+                    if (head.length + issues.length + 3 <= maxLineWidth) {
+                        head = `${head} (${issues})`
+                    } else {
+                        footer = footer + '\n\n' + issues
+                    }
+                }
 
-                commit(head + '\n\n' + body + '\n\n' + footer)
+                commit(filter([head, body, footer]).join('\n\n'))
             })
         },
     }
