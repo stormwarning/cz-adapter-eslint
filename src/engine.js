@@ -1,6 +1,6 @@
+import * as chalk from 'chalk'
 import longest from 'longest'
 import map from 'lodash.map'
-import rightPad from 'right-pad'
 import wrap from 'word-wrap'
 
 function filter(array) {
@@ -9,13 +9,35 @@ function filter(array) {
     })
 }
 
+function headerLength(answers) {
+    return (
+        answers.type.length + 2 + (answers.scope ? answers.scope.length + 2 : 0)
+    )
+}
+
+function maxSummaryLength(answers) {
+    return 72 - headerLength(answers)
+}
+
+function filterSubject(subject) {
+    subject = subject.trim()
+    if (subject.charAt(0).toLowerCase() !== subject.charAt(0)) {
+        subject =
+            subject.charAt(0).toLowerCase() + subject.slice(1, subject.length)
+    }
+    while (subject.endsWith('.')) {
+        subject = subject.slice(0, subject.length - 1)
+    }
+    return subject
+}
+
 export default function(options) {
     var types = options.types
 
     var length = longest(Object.keys(types)).length + 1
     var choices = map(types, function(type, key) {
         return {
-            name: rightPad(key + ':', length) + ' ' + type.description,
+            name: (key + ':').padEnd(length) + ' ' + type.description,
             value: key,
         }
     })
@@ -51,18 +73,52 @@ export default function(options) {
                     message:
                         "Select the type of change that you're committing:",
                     choices: choices,
+                    default: options.defaultType,
                 },
                 {
                     type: 'input',
                     name: 'subject',
-                    message:
-                        'Write a short, imperative tense description of the change:\n',
+                    message: function(answers) {
+                        return (
+                            'Write a short, imperative tense description of the change, (max ' +
+                            maxSummaryLength(answers) +
+                            ' chars):\n'
+                        )
+                    },
+                    default: options.defaultSubject,
+                    validate: function(subject, answers) {
+                        var filteredSubject = filterSubject(subject)
+                        return filteredSubject.length == 0
+                            ? 'subject is required'
+                            : filteredSubject.length <=
+                              maxSummaryLength(answers)
+                            ? true
+                            : 'Subject length must be less than or equal to ' +
+                              maxSummaryLength(answers) +
+                              ' characters. Current length is ' +
+                              filteredSubject.length +
+                              ' characters.'
+                    },
+                    transformer: function(subject, answers) {
+                        var filteredSubject = filterSubject(subject)
+                        var color =
+                            filteredSubject.length <= maxSummaryLength(answers)
+                                ? chalk.green
+                                : chalk.red
+                        return color(
+                            '(' + filteredSubject.length + ') ' + subject,
+                        )
+                    },
+                    filter: function(subject) {
+                        return filterSubject(subject)
+                    },
                 },
                 {
                     type: 'input',
                     name: 'body',
                     message:
                         'Provide a longer description of the change: (press enter to skip)\n',
+                    default: options.defaultBody,
                 },
                 {
                     type: 'confirm',
@@ -82,7 +138,7 @@ export default function(options) {
                     type: 'confirm',
                     name: 'isIssueAffected',
                     message: 'Does this change affect any open issues?',
-                    default: false,
+                    default: options.defaultIssues,
                 },
                 {
                     type: 'input',
@@ -92,22 +148,23 @@ export default function(options) {
                     when: function(answers) {
                         return answers.isIssueAffected
                     },
+                    default: options.defaultIssues
+                        ? options.defaultIssues
+                        : undefined,
                 },
             ]).then(function(answers) {
                 var maxLineWidth = 100
 
                 var wrapOptions = {
                     trim: true,
+                    cut: false,
                     newline: '\n',
                     indent: '',
                     width: maxLineWidth,
                 }
 
-                // Hard limit this line
-                var head = (answers.type + ': ' + answers.subject.trim()).slice(
-                    0,
-                    maxLineWidth,
-                )
+                // Hard limit this line in the validate
+                var head = answers.type + ': ' + answers.subject
 
                 // Wrap these lines at 100 characters
                 var body = wrap(answers.body, wrapOptions)
@@ -118,15 +175,13 @@ export default function(options) {
                     ? 'BREAKING CHANGE: ' +
                       breaking.replace(/^BREAKING CHANGE: /, '')
                     : ''
-                breaking = wrap(breaking, wrapOptions)
+                breaking = breaking ? wrap(breaking, wrapOptions) : false
 
                 var issues = answers.issues
                     ? wrap(answers.issues, wrapOptions)
-                    : ''
+                    : false
 
-                var footer = filter([breaking, issues]).join('\n\n')
-
-                commit(head + '\n\n' + body + '\n\n' + footer)
+                commit(filter([head, body, breaking, issues]).join('\n\n'))
             })
         },
     }
