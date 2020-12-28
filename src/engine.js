@@ -32,10 +32,10 @@ function filterSubject(subject) {
 }
 
 export default function(options) {
-    var types = options.types
+    let types = options.types
 
-    var length = longest(Object.keys(types)).length + 1
-    var choices = map(types, function(type, key) {
+    let length = longest(Object.keys(types)).length + 1
+    let choices = map(types, function(type, key) {
         return {
             name: (key + ':').padEnd(length) + ' ' + type.description,
             value: key,
@@ -87,8 +87,8 @@ export default function(options) {
                     },
                     default: options.defaultSubject,
                     validate: function(subject, answers) {
-                        var filteredSubject = filterSubject(subject)
-                        return filteredSubject.length == 0
+                        let filteredSubject = filterSubject(subject)
+                        return filteredSubject.length === 0
                             ? 'subject is required'
                             : filteredSubject.length <=
                               maxSummaryLength(answers)
@@ -100,8 +100,8 @@ export default function(options) {
                               ' characters.'
                     },
                     transformer: function(subject, answers) {
-                        var filteredSubject = filterSubject(subject)
-                        var color =
+                        let filteredSubject = filterSubject(subject)
+                        let color =
                             filteredSubject.length <= maxSummaryLength(answers)
                                 ? chalk.green
                                 : chalk.red
@@ -153,9 +153,9 @@ export default function(options) {
                         : undefined,
                 },
             ]).then(function(answers) {
-                var maxLineWidth = 100
+                let maxLineWidth = 100
 
-                var wrapOptions = {
+                let wrapOptions = {
                     trim: true,
                     cut: false,
                     newline: '\n',
@@ -164,20 +164,20 @@ export default function(options) {
                 }
 
                 // Hard limit this line in the validate
-                var head = answers.type + ': ' + answers.subject
+                let head = answers.type + ': ' + answers.subject
 
                 // Wrap these lines at 100 characters
-                var body = wrap(answers.body, wrapOptions)
+                let body = wrap(answers.body, wrapOptions)
 
                 // Apply breaking change prefix, removing it if already present
-                var breaking = answers.breaking ? answers.breaking.trim() : ''
+                let breaking = answers.breaking ? answers.breaking.trim() : ''
                 breaking = breaking
                     ? 'BREAKING CHANGE: ' +
                       breaking.replace(/^BREAKING CHANGE: /, '')
                     : ''
                 breaking = breaking ? wrap(breaking, wrapOptions) : false
 
-                var issues = answers.issues
+                let issues = answers.issues
                     ? wrap(answers.issues, wrapOptions)
                     : false
 
