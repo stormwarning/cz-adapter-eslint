@@ -140,7 +140,7 @@ export default function(options) {
                     type: 'input',
                     name: 'issues',
                     message:
-                        'Add issue references (e.g. "fix #123", "re #123".):\n',
+                        'Add issue references (e.g. "fixes #123", "refs #123".):\n',
                     when: function(answers) {
                         return answers.isIssueAffected
                     },
@@ -171,13 +171,23 @@ export default function(options) {
                     ? 'BREAKING CHANGE: ' +
                       breaking.replace(/^BREAKING CHANGE: /, '')
                     : ''
-                breaking = breaking ? wrap(breaking, wrapOptions) : false
+
+                let footer = breaking ? wrap(breaking, wrapOptions) : ''
 
                 let issues = answers.issues
                     ? wrap(answers.issues, wrapOptions)
                     : false
 
-                commit(filter([head, body, breaking, issues]).join('\n\n'))
+                if (issues) {
+                    // Append the issues to the head if there is room, otherwise to the footer.
+                    if (head.length + issues.length + 3 <= maxLineWidth) {
+                        head = `${head} (${issues})`
+                    } else {
+                        footer = footer + '\n\n' + issues
+                    }
+                }
+
+                commit(filter([head, body, footer]).join('\n\n'))
             })
         },
     }
