@@ -1,0 +1,23 @@
+version: 2
+updates:
+- package-ecosystem: npm
+  directory: "/"
+  schedule:
+    interval: monthly
+    time: "12:00"
+  open-pull-requests-limit: 10
+  labels:
+  - upgrade
+  versioning-strategy: increase
+  ignore:
+  - dependency-name: husky
+    versions:
+    - 4.3.6
+    - 4.3.8
+    - 5.1.2
+  - dependency-name: lint-staged
+    versions:
+    - 10.5.3
+  - dependency-name: commitizen
+    versions:
+    - 4.2.2
